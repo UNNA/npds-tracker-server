@@ -148,7 +148,8 @@ the aforementioned files, especially:
 	cssTemplate = /usr/local/share/npdstracker/template.css
 	logfile = /var/log/npdstracker.log
 
-* You can now manually start npdstracker at the command line:
+* You can now manually start npdstracker at the command line (see 'npdstracker 
+Usage' for further details):
 
 	java -jar /usr/local/bin/npdstracker.jar -c /etc/npdstracker/npdscmd.txt -o /etc/npdstracker/npdstracker.ini
 
@@ -242,6 +243,19 @@ The HTML template can use the following pseudo XML tags:
 <version/>
 
 	The current version (e.g. 0.1.35)
+
+
+-----------------------------------------------------------
+
+npstracker Usage
+
+-----------------------------------------------------------
+
+
+Usage: java npdstracker [-h] [-c cmdfile] [-o optionsfile]
+       -h : print this help
+       -c cmdfile : specify commands to run at start (defaults to none)
+       -o optionsfile : specify options file (defaults from compile time)
 
 
 
