@@ -6,9 +6,8 @@ body {
 	}
 
 table {
-	background-color: #CCC;
-	border-collapse: collapse;
-	border: 1px solid #666;
+	border-collapse: separate;
+	border-spacing: 0;
 	width: 100%;
 	}
 
@@ -16,6 +15,50 @@ td, th {
 	border: 1px solid #666;
 	padding: 5px 10px;
 	text-align: left;
+	}
+
+.list th {	
+	background-color: #CCC;
+	}
+
+.list tr:first-child th, .list tr:first-child td {
+	border-top-width: 2px;
+	}
+
+.list tr:last-child th, .list tr:last-child td {
+	border-bottom-width: 2px;
+	}
+
+.list th:first-child, .list td:first-child {
+	border-left-width: 2px;
+	}
+
+.list th:last-child, .list td:last-child {
+	border-right-width: 2px;
+	}
+
+.list tr:first-child th:first-child {
+	-webkit-border-top-left-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	border-top-left-radius: 5px;
+	}
+
+.list tr:first-child th:last-child {
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+	}
+
+.list tr:last-child td:first-child {
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-left-radius: 5px;
+	}
+
+.list tr:last-child td:last-child {
+	-webkit-border-bottom-right-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	border-bottom-right-radius: 5px;
 	}
 
 .down {
