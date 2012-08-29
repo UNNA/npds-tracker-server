@@ -19,6 +19,8 @@ td, th {
 
 th {	
 	background-color: #CCC;
+	border-left-width: 0;
+	border-right-width: 0;
 	}
 
 tr:first-child th, tr:first-child td {
