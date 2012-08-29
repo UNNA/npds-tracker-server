@@ -70,6 +70,8 @@ public class npdstracker extends Thread
 	public static String templateFile = "";
 	public static String stylesheetFile = "";
 	public static String cmdfile = defaultCmdFile;
+	public static String hostName = "";
+	public static String hostLink = "";
 	// Define private host string
 	public static String acceptPrivateHost = "";
 
@@ -554,6 +556,22 @@ public class npdstracker extends Thread
 				else
 					stylesheetFile = st.nextToken();
 			}
+			else if (tempoption.startsWith("trackerName"))
+			{
+				garbage = st.nextToken();
+				if (!(garbage.equals("=")))
+					logMessage("error reading optionsfile, line " + linenumber);
+				else
+					hostName = st.nextToken();
+			}
+			else if (tempoption.startsWith("trackerHost"))
+			{
+				garbage = st.nextToken();
+				if (!(garbage.equals("=")))
+					logMessage("error reading optionsfile, line " + linenumber);
+				else
+					hostLink = st.nextToken();
+			}			
 			else if (tempoption.startsWith("privateHostToAccept"))
 			{
 				garbage = st.nextToken();
@@ -1043,7 +1061,7 @@ public class npdstracker extends Thread
 		
 		urlStr += HTTPDocStr;
 
-		String tableStr = "<table border=\"0\" width=\"100%\" summary=\"List of online Newtons\" class=\"list\">\r\n<tr class=\"header\"><th width=\"10%\">Status</th><th width=\"75%\">Server</th><th>Last Verified</th></tr>\r\n";
+		String tableStr = "<table>\r\n<tr>\r\n<th>Status</th>\r\n<th>Server</th>\r\n<th>Last Verified</th>\r\n</tr>\r\n";
 			
 		int index_i;
 		synchronized (mHostInfoVector)
@@ -1072,17 +1090,17 @@ public class npdstracker extends Thread
 						break;
 				}
 				
-				tableStr += "<tr valign=\"middle\" class=\"" + classStr + "\"><td class=\"listing\"><div align=\"center\"><b>"
+				tableStr += "<tr class=\"" + classStr + "\">\r\n<td><strong>"
 							+ labelStr
-							+ "</b></div></td><td class=\"listing\"><a href=\"http://"
+							+ "</strong></td>\r\n<td><a href=\"http://"
 							+ theInfo.mName
-							+ "\">" + theInfo.mDesc + "</a></td>";
-				tableStr += "<td class=\"listing\"><div align=\"center\">" + theInfo.mLastValidation + "</div></td></tr>\r\n";
+							+ "\">" + theInfo.mDesc + "</a></td>\r\n";
+				tableStr += "<td>" + theInfo.mLastValidation + "</td>\r\n</tr>\r\n";
 			}
 		} // synchronized (mHostInfoVector)
 		if (index_i == 0)
 		{
-			tableStr += "<tr valign=\"top\" class=\"empty\"><td class=\"listing\" colspan=\"3\"><p align=\"center\"><i>No Newtons have registered with this Tracker.</i></p></td></tr>\r\n";
+			tableStr += "<tr>\r\n<td colspan=\"3\"><em>No devices are registered with this tracker server.</em></td>\r\n</tr>\r\n";
 		}
 		tableStr += "</table>\r\n";	
 
@@ -1120,28 +1138,33 @@ public class npdstracker extends Thread
 		String templateLine = template.readLine();
 		while (templateLine != null)
 		{
-			// I replace the following SGML tags. (note: this isn't pure SGML as my tags can be inside other tags arguments)
-			// <servers/>			-> the table of the servers
-			// <validate-time/>		-> the time (in minutes) between validations
-			// <hit-counter/>		-> the number of hits since last restart
-			// <url/>				-> the url of this server (used reading the host header, useful for w3 syntax check button)
-			// <meta-refresh/>		-> meta-HTTP equiv refresh line (remark: the refresh line is sent in the HTTP headers)
-			// <stylesheet/>		-> link element for main stylesheet
-			// <http-doc/>			-> What comes after the GET (usually "/")
-			// <version/>			-> Returns the version (e.g. 0.1.2221)
-			// <last-validation/>	-> Date and time of last validation check: <foo> or "Validation is in progress."
-			// <server-counter/>	-> Number of registered NPDS servers
+			// Replace the following pseudo-SGML tags in the HTML template
+			//
+			// <hit-counter/>		->	The number of hits since last restart
+			// <http-doc/>			->	What comes after the GET (usually “/”)
+			// <last-validation/>	->	The date and time of the last validation or “Validation is in progress.”
+			// <meta-refresh/>		->	The meta element containing the http-equiv="refresh" value
+			// <server-counter/>	->	The number of registered NPDS servers
+			// <servers/>			->	The list of NPDS servers formatted as a table
+			// <stylesheet/>		->	The link element containing the stylesheet as specified in npdstracker.ini
+			// <trackerHost/>		->	The URL of the host site or server as specified in npdstracker.ini
+			// <trackerName/>		->	The name of the host site or server as specified in npdstracker.ini
+			// <url/> 				->	The URL of this server, obtained by reading the HTTP header
+			// <validate-time/>		->	The time (in minutes) between validations
+			// <version/>			->	The current version of the tracker software
 			
-			templateLine = StrReplace( templateLine, "<servers/>", tableStr );
-			templateLine = StrReplace( templateLine, "<validate-time/>", validateTimeStr );
 			templateLine = StrReplace( templateLine, "<hit-counter/>", hitCounterStr );
-			templateLine = StrReplace( templateLine, "<url/>", urlStr );
-			templateLine = StrReplace( templateLine, "<meta-refresh/>", metaRefreshStr );
-			templateLine = StrReplace( templateLine, "<stylesheet/>", stylesheetStr );
 			templateLine = StrReplace( templateLine, "<http-doc/>", HTTPDocStr );
-			templateLine = StrReplace( templateLine, "<version/>", versionStr );
 			templateLine = StrReplace( templateLine, "<last-validation/>", lastValidationStr );
+			templateLine = StrReplace( templateLine, "<meta-refresh/>", metaRefreshStr );
 			templateLine = StrReplace( templateLine, "<server-counter/>", serverCounterStr );
+			templateLine = StrReplace( templateLine, "<servers/>", tableStr );
+			templateLine = StrReplace( templateLine, "<stylesheet/>", stylesheetStr );
+			templateLine = StrReplace( templateLine, "<trackerHost/>", hostLink);
+			templateLine = StrReplace( templateLine, "<trackerName/>", hostName);
+			templateLine = StrReplace( templateLine, "<url/>", urlStr );
+			templateLine = StrReplace( templateLine, "<validate-time/>", validateTimeStr );
+			templateLine = StrReplace( templateLine, "<version/>", versionStr );
 
 			out.print(templateLine + "\r\n");
 			templateLine = template.readLine();
