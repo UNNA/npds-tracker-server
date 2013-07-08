@@ -1610,7 +1610,10 @@ public class npdstracker extends Thread
 						logMessage("Return code is bad. Not getting any records from this server.");
 
 					theSocket.close();
-				} catch (IOException e) {;}
+				} catch (IOException e) {
+					// Oops, some exception occured.
+					logMessage("Exception occurred making SHARE connection with " +theServerInfo.mHost + ": " + e);
+				}
 			} // for (int foo = 0; foo < mSharingInfoVector.size(); foo++)
 		} // synchronized( mSharingInfoVector )
 				
